@@ -3,7 +3,7 @@
 1. Clone the project
 
 ```
-git clone git@github.com:ASIMNEUPANE/Express-Typescript-Starter.git <ProjectName>
+git clone git@github.com:ASIMNEUPANE/Airbnb.git <ProjectName>
 ```
 
 2. Move in to the folder structure
