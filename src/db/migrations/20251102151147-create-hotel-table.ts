@@ -1,5 +1,6 @@
+import { QueryInterface, DataTypes } from 'sequelize';
 module.exports = {
-  async up (queryInterface,Sequelize) {
+  async up (queryInterface:QueryInterface,Sequelize:typeof DataTypes) {
     await queryInterface.createTable('hotels',{
       id: {
         allowNull: false,
@@ -26,7 +27,7 @@ module.exports = {
    
   },
 
-  async down (queryInterface) {
+  async down (queryInterface:QueryInterface) {
     await queryInterface.dropTable('hotels');
    
   }
