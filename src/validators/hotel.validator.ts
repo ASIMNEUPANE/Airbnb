@@ -7,3 +7,4 @@ export const hotelSchema=z.object({
     rating:z.number().min(0).max(5).optional(),
     ratingCount:z.number().min(0).optional(),
 })
+export const updateHotelSchema=hotelSchema.partial();
