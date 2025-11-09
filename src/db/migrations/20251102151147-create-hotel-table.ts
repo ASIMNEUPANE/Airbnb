@@ -1,4 +1,5 @@
 import { QueryInterface, DataTypes } from 'sequelize';
+
 module.exports = {
   async up (queryInterface:QueryInterface,Sequelize:typeof DataTypes) {
     await queryInterface.createTable('hotels',{
@@ -11,8 +12,19 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      address:{
+        type: Sequelize.STRING
+      },
       location: {
         type: Sequelize.STRING
+      },
+      rating:{
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
+      ratingCount:{
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -31,4 +43,5 @@ module.exports = {
     await queryInterface.dropTable('hotels');
    
   }
+
 };
