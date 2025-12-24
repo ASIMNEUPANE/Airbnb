@@ -3,4 +3,4 @@ dist/
 .env
 logs/
 learning.md
-/generated/prisma
+/src/generated/prisma
