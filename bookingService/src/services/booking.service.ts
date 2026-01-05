@@ -1,13 +1,12 @@
+import { CreateBookingDTO } from '../dto/booking.dto'
 import {confirmBooking, createBooking, createIdempotencyKey, finalizeIdempotencyKey, getIdempotencyKey} from '../repositories/booking.repository'
 import { BadRequestError } from '../utils/errors/app.error'
 import { generateIdempotencyKey } from '../utils/generateIdempotencyKey'
 
-export const createBookingService = async(userId:number,hotelId:number,totalGuests:number,amount:number)=>{
+export const createBookingService = async(payload:CreateBookingDTO)=>{
 
     const booking = await createBooking({
-        userId,
-        amount,
-        hotelId,
+      ...payload,
         totalGuests:1,
          
     })
@@ -18,7 +17,7 @@ export const createBookingService = async(userId:number,hotelId:number,totalGues
 }
 
 
-export const finalizeBookingService = async(idempotencyKey:string)=>{
+export const confirmBookingService = async(idempotencyKey:string)=>{
     const idempotencyKeyData = await getIdempotencyKey(idempotencyKey)
     if(idempotencyKeyData.finalize){
         throw new BadRequestError('Booking already finalized')

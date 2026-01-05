@@ -56,3 +56,30 @@ export const validateQueryParams = (schema: AnyZodObject) => {
     }
 }
 
+/**
+ * 
+ * @param schema - Zod schema to validate the request body
+ * @returns - Middleware function to validate the request query params
+ */
+export const validateParams = (schema: AnyZodObject) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            console.log("Validating request params", req.params);
+            await schema.parseAsync(req.params);
+            console.log("Params are valid");
+            next();
+
+        } catch (error) {
+            // If the validation fails, 
+            logger.error("Request params is invalid")
+            res.status(400).json({
+                message: "Invalid params params",
+                success: false,
+                error: error
+            });
+            
+        }
+    }
+}
+
