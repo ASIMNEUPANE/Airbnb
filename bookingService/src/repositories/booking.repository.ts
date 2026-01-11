@@ -1,13 +1,21 @@
+import logger from "../config/logger.config";
 import { Prisma,IdempotencyKey } from "../generated/prisma/client";
 import {BookingStatus} from "../generated/prisma/enums"
-import prisma from "../prisma/client";
+import prisma from "../lib/prisma";
 import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { validate as isValidUUID } from "uuid";
 
 export const createBooking = async (bookingInput:Prisma.BookingCreateInput) => {
+    logger.info('Creating booking with input:', bookingInput);
     const booking = await prisma.booking.create({
-        data: bookingInput
-    });
+        data:{
+            ...bookingInput,
+        }
+    })
+    logger.info('Booking created:', booking);
+    if(!booking){
+        throw new BadRequestError('Failed to create booking')
+    }
     return booking
 };
 
@@ -85,8 +93,8 @@ export const cancelBookingStatus =(bookingId:number)=>{
    return booking
 }
 
-export const finalizeIdempotencyKey = async(key:string)=>{
-    const idempotencyKey = await prisma.idempotencyKey.update({
+export const finalizeIdempotencyKey = async(tx:Prisma.TransactionClient,key:string)=>{
+    const idempotencyKey = await tx.idempotencyKey.update({
         where:{
             key
         },
