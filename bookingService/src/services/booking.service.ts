@@ -7,10 +7,7 @@ import prisma from "../lib/prisma";
 
 export const createBookingService = async(payload:CreateBookingDTO)=>{
     const booking = await createBooking({
-        amount:payload.amount,
-        userId:payload.userId,
-        hotelId:payload.hotelId,
-        totalGuests:1,
+       ...payload
          
     })
     const idempotencyKey = generateIdempotencyKey()

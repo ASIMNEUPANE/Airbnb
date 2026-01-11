@@ -1,4 +1,3 @@
-import logger from "../config/logger.config";
 import { Prisma,IdempotencyKey } from "../generated/prisma/client";
 import {BookingStatus} from "../generated/prisma/enums"
 import prisma from "../lib/prisma";
@@ -6,16 +5,11 @@ import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { validate as isValidUUID } from "uuid";
 
 export const createBooking = async (bookingInput:Prisma.BookingCreateInput) => {
-    logger.info('Creating booking with input:', bookingInput);
     const booking = await prisma.booking.create({
         data:{
             ...bookingInput,
         }
     })
-    logger.info('Booking created:', booking);
-    if(!booking){
-        throw new BadRequestError('Failed to create booking')
-    }
     return booking
 };
 
@@ -23,7 +17,7 @@ export const createIdempotencyKey = async(key:string,bookingId:number)=>{
 
     const idempotencyKey =await prisma.idempotencyKey.create({
         data:{
-     key,
+     idemKey:key,
      booking:{
         connect:{
             id:bookingId
@@ -35,13 +29,14 @@ export const createIdempotencyKey = async(key:string,bookingId:number)=>{
     return idempotencyKey
 }
 
-export const getIdempotencyKeyWithLock = async(tx:Prisma.TransactionClient,key:string)=>{
+export const getIdempotencyKeyWithLock = async(tx:Prisma.TransactionClient,keys:string)=>{
 
-  if(!isValidUUID(key)){
+  if(!isValidUUID(keys)){
         throw new BadRequestError('Invalid idempotency key')
     }
+    console.log('Acquiring lock for Idempotency Key:', keys);
     const idempotencyKey:Array<IdempotencyKey> = await tx.$queryRaw
-        `SELECT * FROM "IdempotencyKey" WHERE key = ${key} FOR UPDATE`
+        `SELECT * FROM IdempotencyKey WHERE idemKey = ${keys} FOR UPDATE`
         
     console.log('Idempotency Key with Lock:', idempotencyKey);
     if(!idempotencyKey || idempotencyKey.length === 0){
@@ -96,7 +91,7 @@ export const cancelBookingStatus =(bookingId:number)=>{
 export const finalizeIdempotencyKey = async(tx:Prisma.TransactionClient,key:string)=>{
     const idempotencyKey = await tx.idempotencyKey.update({
         where:{
-            key
+            idemKey:key
         },
         data:{
             finalize:true

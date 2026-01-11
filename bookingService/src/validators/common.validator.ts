@@ -5,3 +5,7 @@ export const idSchema=z.object({
    .transform((val)=>parseInt(val,10))
    .refine((val)=>!isNaN(val)&&val>0,{message:"ID must be a positive integer"})
 })
+
+export const uuidSchema=z.object({
+      idempotencyKey:z.string().uuid({message:"Invalid UUID format"})
+   })

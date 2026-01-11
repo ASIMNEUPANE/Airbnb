@@ -11,7 +11,7 @@ export const createBookingHandler = async (req: Request, res: Response, next: Ne
 
 export const confirmBookingHandler = async (req: Request, res: Response, next: NextFunction) => {
     logger.info("Confirm booking request received");
-      const booking=  confirmBookingService(req.params.idempotencyKey);
+      const booking= await confirmBookingService(req.params.idempotencyKey);
        successResponse(res, booking, 'Booking confirmed successfully',200);
 }
 
