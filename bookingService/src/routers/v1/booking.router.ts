@@ -6,8 +6,8 @@ import { idSchema } from '../../validators/common.validator';
 
 const bookingRouter = express.Router();
 
-bookingRouter.post('/',validateRequestBody(createBookingSchema), createBookingHandler); 
-bookingRouter.put('/:id',validateParams(idSchema),confirmBookingHandler ); 
+bookingRouter.post('/',validateRequestBody(createBookingSchema), createBookingHandler);
+bookingRouter.put('/confirm/:idempotencyKey',validateParams(idSchema),confirmBookingHandler );
 
 
 export default bookingRouter;

@@ -1,7 +1,8 @@
-import { Prisma } from "../generated/prisma/client";
+import { Prisma,IdempotencyKey } from "../generated/prisma/client";
 import {BookingStatus} from "../generated/prisma/enums"
 import prisma from "../prisma/client";
-import { NotFoundError } from "../utils/errors/app.error";
+import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
+import { validate as isValidUUID } from "uuid";
 
 export const createBooking = async (bookingInput:Prisma.BookingCreateInput) => {
     const booking = await prisma.booking.create({
@@ -26,14 +27,19 @@ export const createIdempotencyKey = async(key:string,bookingId:number)=>{
     return idempotencyKey
 }
 
-export const getIdempotencyKey = async(key:string)=>{
-    const idempotencyKey = await prisma.idempotencyKey.findUnique({where:{
-        key
-    }})
-    if(!idempotencyKey){
+export const getIdempotencyKeyWithLock = async(tx:Prisma.TransactionClient,key:string)=>{
+
+  if(!isValidUUID(key)){
+        throw new BadRequestError('Invalid idempotency key')
+    }
+    const idempotencyKey:Array<IdempotencyKey> = await tx.$queryRaw
+        `SELECT * FROM "IdempotencyKey" WHERE key = ${key} FOR UPDATE`
+        
+    console.log('Idempotency Key with Lock:', idempotencyKey);
+    if(!idempotencyKey || idempotencyKey.length === 0){
         throw new NotFoundError('Idempotency key not found')
     }
-    return idempotencyKey
+    return idempotencyKey[0];
 }
 
 export const getBookingById = async(id:number)=>{
@@ -55,8 +61,8 @@ export const changeBookingStatus =(bookingId:number,status:BookingStatus)=>{
    })
    return booking
 }
-export const confirmBooking =(bookingId:number)=>{
-   const booking = prisma.booking.update({
+export const confirmBooking =(tx:Prisma.TransactionClient,bookingId:number)=>{
+   const booking = tx.booking.update({
        where:{
         id:bookingId
        },
