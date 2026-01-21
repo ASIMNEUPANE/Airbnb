@@ -3,15 +3,27 @@ import {confirmBooking, createBooking, createIdempotencyKey, finalizeIdempotency
 import { BadRequestError } from '../utils/errors/app.error'
 import { generateIdempotencyKey } from '../utils/generateIdempotencyKey'
 import prisma from "../lib/prisma";
+import { redLock } from '../config/redis.config';
+import { serverConfig } from '../config';
 
 
 export const createBookingService = async(payload:CreateBookingDTO)=>{
-    const booking = await createBooking({
+   const bookingResource = `hotel:${payload.hotelId}-user:${payload.userId}`;
+   return await redLock.using([bookingResource],serverConfig.LOCK_TTL,async()=>{
+console.log("Startttt")
+      const booking = await createBooking({
        ...payload        
     })
+    console.log("hiiiiiiiiiii")
     const idempotencyKey = generateIdempotencyKey()
+    console.log("Heloooooo")
     await createIdempotencyKey(idempotencyKey,booking.id)
+    console.log("Whatsupp")
+    console.log({bookingId:booking.id ,idempotencyKey})
     return {bookingId:booking.id ,idempotencyKey}
+   })
+   
+  
 }
 
 export const confirmBookingService = async(idempotencyKey:string)=>{

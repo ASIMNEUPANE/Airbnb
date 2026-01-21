@@ -5,12 +5,17 @@ import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { validate as isValidUUID } from "uuid";
 
 export const createBooking = async (bookingInput:Prisma.BookingCreateInput) => {
-    const booking = await prisma.booking.create({
+    try {
+           const booking = await prisma.booking.create({
         data:{
             ...bookingInput,
         }
     })
-    return booking
+    return booking 
+    } catch (error) {
+throw new BadRequestError(error as string)
+    }
+
 };
 
 export const createIdempotencyKey = async(key:string,bookingId:number)=>{

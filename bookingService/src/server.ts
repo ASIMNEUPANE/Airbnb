@@ -1,4 +1,4 @@
-import express from 'express';
+import express,{ErrorRequestHandler} from 'express';
 import { serverConfig } from './config';
 import router from './routers';
 import {appErrorHandler, genericErrorHandler } from './middlewares/error.middleware';
@@ -28,7 +28,7 @@ app.use('/', router);
  * Add the error handler middleware
  */
 
-app.use(appErrorHandler);
+app.use(appErrorHandler as ErrorRequestHandler);
 app.use(genericErrorHandler);
 
 

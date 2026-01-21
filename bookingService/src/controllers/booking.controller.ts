@@ -5,8 +5,12 @@ import { successResponse } from "../utils/response/success.response";
 
 export const createBookingHandler = async (req: Request, res: Response, next: NextFunction) => {
     logger.info("Create booking request received");
-       const booking = await createBookingService(req.body);
-       successResponse(res, booking, 'Booking created successfully',201);
+  
+ const booking = await createBookingService(req.body);
+ logger.info(booking)
+successResponse(res, booking, 'Booking created successfully',201);
+
+      
 }
 
 export const confirmBookingHandler = async (req: Request, res: Response, next: NextFunction) => {
