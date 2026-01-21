@@ -7,15 +7,12 @@ import prisma from "../lib/prisma";
 
 export const createBookingService = async(payload:CreateBookingDTO)=>{
     const booking = await createBooking({
-       ...payload
-         
+       ...payload        
     })
     const idempotencyKey = generateIdempotencyKey()
     await createIdempotencyKey(idempotencyKey,booking.id)
     return {bookingId:booking.id ,idempotencyKey}
 }
-
-
 
 export const confirmBookingService = async(idempotencyKey:string)=>{
 
