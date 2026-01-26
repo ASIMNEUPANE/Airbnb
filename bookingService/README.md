@@ -15,19 +15,10 @@ cd <ProjectName>
 3. Install npm dependencies
 
 ```
-npm i
-```
 
 4. Create a new .env file in the root directory and add the `PORT` env variable
-
+ķķ
 ```
 echo PORT=3000 >> .env
-```
 
-5. Start the express server
-
-```
-npm run dev
-```# Express-Typescript-Starter
-
-npx prisma generate
+5. Start the express server ``` npm run dev ```# Express-Typescript-Starter hello npx prisma generate
