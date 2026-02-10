@@ -1,6 +1,6 @@
 import ioredis from 'ioredis';
 import RedLock from 'redlock';
-import { serverConfig } from '.';
+import { serverConfig } from './index';
 
 
 export const redisClient = new ioredis(serverConfig.REDIS_SERVER_URL!);

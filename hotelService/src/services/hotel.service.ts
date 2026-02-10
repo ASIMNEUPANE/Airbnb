@@ -9,8 +9,6 @@ export const createHotelService=async(hotelData:createHotelDto)=>{
 }
 export const getHotelService=async(id:number)=>{
     const hotel = await getHotelById(id);
-
-
     return hotel;
 }
 
