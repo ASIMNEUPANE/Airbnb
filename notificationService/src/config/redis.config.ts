@@ -1,20 +1,16 @@
-import Redis from 'ioredis';
+import Redis, { RedisOptions } from "ioredis";
 
-const connectionToRedis = ()=>{
-    try {
-        let connection:Redis;
-        return ()=>{
-            if(!connection){
-                connection = new Redis({
-                    port:6379,
-                    host:"redis"
-                }
-            )
-            return connection;
-            }
-        }
-    } catch (error) {
-        throw error
-    }
-}
-export const getRedisConnectionObject = connectionToRedis();
+const redisConfig: RedisOptions = {
+  port: 6379,
+  host: "127.0.0.1",
+  maxRetriesPerRequest: null,
+};
+
+let connection: Redis | null = null;
+
+export const getRedisConnectionObject = (): Redis => {
+  if (!connection) {
+    connection = new Redis(redisConfig);
+  }
+  return connection;
+};
