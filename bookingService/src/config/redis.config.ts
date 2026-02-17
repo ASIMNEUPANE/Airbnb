@@ -1,11 +1,23 @@
-import ioredis from 'ioredis';
 import RedLock from 'redlock';
-import { serverConfig } from './index';
+import Redis, { RedisOptions } from "ioredis";
 
 
-export const redisClient = new ioredis(serverConfig.REDIS_SERVER_URL!);
+const redisConfig: RedisOptions = {
+  port: 6379,
+  host: "127.0.0.1",
+  maxRetriesPerRequest: null,
+};
 
-export const redLock = new RedLock([redisClient],{
+let connection: Redis | null = null;
+
+export const getRedisConnectionObject = (): Redis => {
+  if (!connection) {
+    connection = new Redis(redisConfig);
+  }
+  return connection;
+};
+
+export const redLock = new RedLock([getRedisConnectionObject()],{
     driftFactor:0.01,
     retryCount:10,
     retryDelay:100,

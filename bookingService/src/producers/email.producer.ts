@@ -1,12 +1,11 @@
 import {mailerOueue} from "../queues/mailer.queue";
 import { notificationDto } from "../dto/notification.dto";
-import logger from "../config/logger.config";
+import { log } from "console";
 
 export const MAILER_PAYLOAD ='payload:email'
 
 export const addEmailToQueue = async (payload:notificationDto)=>{
-        logger.info('Adding email job to queue:',payload);
-
+    log('Adding email job to queue:',payload);
     await mailerOueue.add(MAILER_PAYLOAD,payload,
         {
             attempts:3,
