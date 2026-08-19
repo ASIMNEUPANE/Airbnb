@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process'
 import chalk from 'chalk'
 
-const PROTECTED_BRANCHES = ['main', 'development', 'master']
+const PROTECTED_BRANCHES = ['main','master']
 
 const checkBranch = () => {
   try {
