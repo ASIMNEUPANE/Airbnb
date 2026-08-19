@@ -14,6 +14,20 @@ type Application struct {
 	Config Config
 }
 
+// constructor for config
+func NewConfig(addr string) Config {
+	return Config{
+		Addr: addr,
+	}
+}
+
+// constructor for Application
+func NewApplication(cfg Config) *Application {
+	return &Application{
+		Config: cfg,
+	}
+}
+
 // member func of Application
 func (app *Application) Run() error {
 	server := &http.Server{
